@@ -1,0 +1,39 @@
+.scroll_cont{
+  height:100%;
+  width:100%;
+}
+.scroll_title{
+  height:2rem;
+  width:100%;
+  font-size:1rem;
+  line-height: 2rem;
+  text-align: center;
+  color:#911C61;
+}
+.scroll_main{
+  height:12rem;
+  font-size:1rem;
+  color:#000;
+  text-align: center;
+  position: relative;;
+  overflow: hidden;
+}
+.scroll_line{
+  height:2rem;
+  width:100%;
+  border-top: 1px solid #911C61;
+  border-bottom: 1px solid #911C61;
+  position: absolute;
+  top:2rem;
+
+}
+.scroll_select{
+  color:#911C61;
+}
+.scroll_main li {
+  width:100%;
+  height:2rem;
+  line-height: 2rem;
+  box-sizing: border-box;
+  /* border-top:1px solid red; */
+}

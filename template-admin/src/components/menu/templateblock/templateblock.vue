@@ -1,7 +1,7 @@
 <template>
   <div class='page_menu_list'>
     <div class='func_tab'>
-      <el-input v-model="search.name" placeholder="请输入权限名"></el-input>
+      <el-input v-model="search.name" placeholder="请输入关键字"></el-input>
       <el-button type="primary" @click='loadData'>查询</el-button>
       <el-button type="primary" @click='create'>新增</el-button>
     </div>
@@ -15,7 +15,7 @@
         style="width: 100%;height:100%;overflow:auto;"  class='showData'>    
         <el-table-column
           type="index"
-          :index="(page-1)*20+1"
+          :index="(search.page-1)*search.pagesize+1"
           width="100"
            label="序号">
         </el-table-column>
@@ -31,8 +31,9 @@
           >
           <template slot-scope="scope">
               <el-button-group>
-                <el-button type="primary"   @click='update(list[scope.$index])'>{{config.label.modify}}</el-button>
-                <el-button type="primary"   @click='del(list[scope.$index].id)'>{{config.label.delete}}</el-button>
+                <el-button type="primary"   @click='update(list[scope.$index])'>{{config.label.modify}}</el-button>                
+                <el-button type="danger"  @click='del(list[scope.$index])'>{{config.label.delete}}</el-button>
+
               </el-button-group>
           </template>
         </el-table-column>
@@ -42,8 +43,8 @@
       <el-pagination
         layout="prev, pager, next"
         @current-change='goPage'
-        :page-size='20'
-        :current-page='page'
+        :page-size='search.pagesize'
+        :current-page='search.page'
         :total="total_page">
         
       </el-pagination>
@@ -59,28 +60,31 @@
   import urls from '@/common/urls'
   import tool from '@/common/tool'
   import tips from '@/common/tips'
-  import detail from '@/components/menu/permissions/detail'
-  import middle from '@/components/menu/permissions/middle'
+  import detail from '@/components/menu/templateblock/detail'
+  import middle from '@/components/menu/templateblock/middle'
   import BSscroll from 'better-scroll'
   import $ from 'jquery'
   export default {
-    name:'permissions',
+    name:'templateblock',
     data() {
       return {
         config:{
+          label:config.table.label,
           imgfields:[],
           filedsWidth:{
           }
         },
         search:{
-          name:''
+          name:'',
+          page:config.table.page,
+          pagesize:config.table.pagesize,
         },
-        page:config.table.page,
-        pagesize:config.table.pagesize,
         total_page:1,
+        watchDetail:false,
         list: [],
         scroll:undefined,
         loading:false,
+        deleteLoading:false,
         fields:{},
         item:{},
         tab:'',
@@ -88,8 +92,8 @@
       }
     },
     created(){
-      this.fields = config.table.permissions;
-      // this.loadData();
+      this.fields = config.table.templateblock;
+      this.loadData();
       // 根据当前界面宽高显示不同的字段
     },
     mounted(){
@@ -101,13 +105,14 @@
     },
     methods:{
       loadData(){
-        let url = `${urls.permissions.list}?page=${this.page}&pagesize=${this.pagesize}&name=${this.search.name}`
+        console.log(this.search)
+        let url = `${urls.templateblock.list}?page=${this.search.page}&pagesize=${this.search.pagesize}&name=${this.search.name}`
          axios.get(url,(res)=>{
-            this.list = res.data;
-            this.total_page = res.count || 1;
-            this.$nextTick(()=>{
-              // this.initScroll();
-            })
+          this.list = res.data;
+          this.total_page = res.count || 1;
+          this.$nextTick(()=>{
+            // this.initScroll();
+          })
          })
       },
       initScroll(){
@@ -135,14 +140,14 @@
         return text ? text : tool.fotmatData(key,data[key])
       },
       goPage(page){
-        this.page = page;
+        this.search.page = page;
         sessionStorage.setItem('page',page)
         this.loadData();
       },
       select(data,tableData,cell){
       },
       exportFile(){
-        axios.download(urls.permissions.export,this.getName(),'xlsx')
+        axios.download(urls.templateblock.export,this.getName(),'xlsx')
       },
       getName(){
         let date = new Date();
@@ -170,23 +175,29 @@
         this.tab = 'middle'
       },
       create(){
-        this.item = {}
+        this.item = null
         this.tab = 'middle'
       },
-      del(id){
+      del(item){
           this.$confirm('此操作将永久删除此信息, 是否继续?', '警告', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'error'
           }).then(() => {
-            this.requestDel(id);
+            this.requestDel(item);
           }).catch((res) => {
           });
       },
-      requestDel(id){
-        let url = `${urls.permissions.delete}?id=${id}`;
+      requestDel(item){
+        if(this.deleteLoading) return;
+        this.deleteLoading = true;
+        let url = `${urls.templateblock.delete}?id=${item.id}`;
         axios.delete(url,(res)=>{
+          setTimeout(()=>{this.deleteLoading = false},1000)
           if(res.errcode) return;
+          if(this.total_page%this.search.pagesize == 1 && this.search.page > 1){
+            this.search.page -=1;
+          }
           this.loadData();
           tips.success({text:`删除成功`})
         })

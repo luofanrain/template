@@ -1,12 +1,17 @@
 import config from '@/common/config'
 const urls = {
     login:'/api/login',
-    permissions:{
-        list:'/api/permission_type',
-        create:'/api/permission_type',
-        update:'/api/permission_type',
-        delete:'/api/permission_type'
-    }
+    uploads:{
+        uploadFile:'/',
+        uploadBase64:'/'
+    },
+    templateblock:{
+        list:'/api/power',
+        create:'/api/power',
+        update:'/api/power',
+        detail:'/api/power',
+        delete:'/api/power'
+    },
 }
 for(let key in urls){
     if(typeof urls[key] == "object"){

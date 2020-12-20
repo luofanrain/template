@@ -4,151 +4,107 @@ import tool  from '@/common/tool'
 import config  from '@/common/config'
 import tips  from '@/common/tips'
 const getHeaders = () =>{
-  // let openid = tool.getCookie('openid') || 'oYAPDjhBRVsk5OqB65NnQuE7-YJw';
-  let openid = tool.getCookie('openid') || 'oYAPDjhAyptBdVAiyS5WrBLjEoSc';
-  // let openid = tool.getCookie('openid') || 'oYAPDjm-wfGwKXOyAxgqz8F_WHho1';
-  // let openid = tool.getCookie('openid') || 'oYAPDjn044D8rquVocItzqH2PJAo';
-  // let openid = tool.getCookie('openid') || 'oYAPDjms1cwKYxx8dvEjCMmd4qxk';
-  return {token:'',openid}
+  let token = tool.getCookie('token');
+  // let token = store.state.token;
+  return  {
+    token,
+    username:tool.getCookie('username') || ''
+  };
 }
-let isload = false;
+// axios.defaults.withCredentials=true
 const tipCode = (err) => {
   try{
-    console.log(err)
     let code = err.response.status;
     let errCode = config.tips.errCode
     if(code == 500){
       tips.error({text:errCode[500]})
     }else{
-      console.log(err.response.data)
-      tips.error({text:err.response.data.msg || errCode[code] || errCode.default.replace('$',code)})
+      tips.error({text:err.response.data.msg || errCode[code] || errCode.default})
     }
   }catch(e){
     console.log(err)
     tips.error({text:errCode.other})
   }
 }
-const post = (url,data,cb) =>{
-  data = data || {};
-  // if(data.append) data.append('openid',store.state.openid)
-  // else  data = parseBody({...data,openid:store.state.openid})
- 
-
+const download = (url,name,type) => {
   axios({
-    url:url,
-    method:'POST',
-    data:data,
-    headers:getHeaders()
-  }).then((res)=>{
-    console.log(res)
-    let _data = res.data;
-    cb(_data)
-  }).catch((err,er)=>{
-    try{
-      console.log(err)
-      let data = err.response.data;
-      if(data.detail) console.log(err.response)
-      else tipCode(err);
-      cb({errcode:true,data:[],err:data})
-    }catch(e){
-      console.log(e)
-      // tips.error({text:config.tips.errorCode['500']})
-    }
+    method: 'get',
+    headers: {
+      'Content-Type': config.axiosType['type'],
+      ...getHeaders()
+    },
+    responseType: 'blob',
+    url: url,
   })
+  .then( res =>{ 　　　　
+    let blob = new Blob([res.data], {type: config.axiosType[type]});      　
+    if('msSaveOrOpenBlob' in navigator){
+      window.navigator.msSaveOrOpenBlob(blob, `${name}.${type}`);
+      return
+    }　　　
+    let downloadElement = document.createElement('a');                  
+    let href = window.URL.createObjectURL(blob);                  
+    downloadElement.href = href;      　　　　
+    downloadElement.download = `${name}.${type}`;　　　　　　　　　　
+    document.body.appendChild(downloadElement);                  
+    downloadElement.click();                  
+    document.body.removeChild(downloadElement);                  
+    window.URL.revokeObjectURL(href);      　　
+  }).catch( err => {
+　　　　tips.error({text:'暂没有数据阔以导出'});
+　　});
 }
-const get = (url,cb) =>{
-  // if(url.indexOf('?') > -1) url =  `${url}&openid=${store.state.openid}`
-  // else url =  `${url}?openid=${store.state.openid}`
-
-  axios({
-    url:url,
-    method:'GET',
-    headers:getHeaders()
-  }).then((res)=>{
-    console.log(res)
-    let _data = res.data;
-    cb(_data)
-  }).catch((err)=>{
-    try{
-      console.log(err)
-      let data = err.response.data;
-      if(data.detail) console.log(err.response)
-      else tipCode(err);
-      cb({errcode:true,data:[],err:data})
-    }catch(e){
-      console.log(e)
-      // tips.error({text:config.tips.errorCode['500']})
-    }
-  })
-}
-const getStream = (url,cb) =>{
-
+const getStream = (url,callback) =>{
   axios.get(url).then((res)=>{
-    cb(res)
+    callback(res)
   }).catch((res)=>{
-    cb({isErrorStatus:true})
-  })
-}
-const delet = (url,cb) =>{
-  // if(url.indexOf('?') > -1) url =  `${url}&openid=${store.state.openid}`
-  // else url =  `${url}?openid=${store.state.openid}`
-
-  axios({
-    url:url,
-    method:'DELETE',
-    headers:getHeaders()
-  }).then((res)=>{
     console.log(res)
-    let _data = res.data;
-    cb(_data)
-  }).catch((err)=>{
-    try{
-      console.log(err)
-      let data = err.response.data;
-      if(data.detail) console.log(err.response)
-      else tipCode(err);
-      cb({errcode:true,data:[],err:data})
-    }catch(e){
-      // tips.error({text:config.tips.errorCode['500']})
-    }
+    callback({isErrorStatus:true})
   })
 }
-const patch = (url,data,cb) =>{
-  data = data || {};
-  // if(data.append) data.append('openid',store.state.openid)
-  // else  data = parseBody({...data,openid:store.state.openid})
+const AxiosGet = (url,callback,headers) =>{
+  AxiosRequest(url,{},'get',headers,callback)
+}
+const AxiosPost = (url,data,callback,headers) =>{
+  AxiosRequest(url,data,'post',headers,callback)
+}
+const AxiosDelete = (url,callback,headers) =>{
+  AxiosRequest(url,{},'delete',headers,callback)
+}
+const AxiosPatch = (url,data,callback,headers) =>{
+  AxiosRequest(url,data,'patch',headers,callback)
+}
 
+const AxiosRequest = (url,data={},method,headers={},callback) => {
   axios({
-    method:'PATCH',
+    method,
     url,
-    data:data,
+    data,
     processData: false,  // 不处理数据
     contentType: false,   // 不设置内容类型
-    headers:getHeaders()
+    headers:{
+      ...getHeaders(),
+      ...headers
+    }
   }).then((res)=>{
-    isload = false;
-    let _data = res.data;
-    cb(_data)
+    callback(res.data)
   }).catch((err)=>{
-    isload = false;
-    let text = err.toString();
-    console.log(text);
-    tips.error({text})
+    try{
+      let data = err.response.data;
+      if(data.detail) console.log(err.response)
+      else tipCode(err);
+      callback({errcode:true,data:null,err:err})
+    }catch(e){
+      callback({errcode:true,data:null,err:err})
+    }
   })
 }
-
-const parseBody = (data)=>{
-  let str = '';
-  for(let key in data){
-      str = `${str}${key}=${data[key]}&`
-  }
-  return str.substr(0,str.length-1);
-}
 export default {
-  post,
-  get,
-  patch:patch,
-  delete:delet,
+  get:AxiosGet,
+  post:AxiosPost,
+  delete:AxiosDelete,
+  patch:AxiosPatch,
+  download,
   getHeaders,
   getStream
 }

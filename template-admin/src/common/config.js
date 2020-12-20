@@ -1,5 +1,6 @@
  const config = {
-  host:'/',  
+  host:'',
+  havePermisiison:'false',
   axiosType:{
     zip:'application/zip',
     xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
@@ -17,22 +18,22 @@
   },
   banner:[
     // {
-    //   label:'项目管理',
+    //   label:'模板菜单',
     //   type:'group',
     //   list:[
     //     {
     //       key:'templatedemo',
-    //       label:'入组上限'
+    //       label:'模板列表'
     //     },
     //   ]
     // },
 
     {
-      key:'permissions',  
+      key:'templateblock',  
       type:'row',
-      label:'日报列表',
+      label:'模板列表',
       level:[0,1],
-      code:'DAILYLIST'
+      code:'TEMPLATE'
     }
 
   ],
@@ -49,17 +50,11 @@
       detail:'详情',
       preview:'预览'
     },
-    permissions:{
-      name: '姓名',
-      province: "省份",
-      city: "城市",
-      hospital: "医院",
-      telephone: "联系电话",
-      email: "邮箱",
-      field: "领域",
-      department: "科室",
-      create_time: "创建时间",
-    }
+    templateblock:{
+      name: '名字',
+      count: "数量",
+      status: '状态',
+    },
   }
 }
 export default config;

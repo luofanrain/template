@@ -59,24 +59,25 @@ export default {
   },
   methods: {
     loadData(){
-      axios.get(urls.login,(res)=>{
+      let res = {};
+      // axios.get(urls.login,(res)=>{
         console.log(res)
         this.permission = res.level
         this.$store.commit('setState',{permssions:res.permssions || []})
         this.config.permssions = res.permssions || [];
         // this.permission = 0
         this.initData()
-      })
+      // })
     },
     initData(){
       let banners=[];
       for(let i in config.banner){
         let item = {...config.banner[i]};
         if(item.type == 'group'){
-          item.list = item.list.filter(x=this.config.permssions.indexOf(x.code) > -1)
+          item.list = item.list.filter(x=this.config.permssions.indexOf(x.code) > -1 || config.havePermisiison)
           if(item.length > 0) banners.push(item)
         }else{
-          if(this.config.permssions.indexOf(item.code) > -1){
+          if(this.config.permssions.indexOf(item.code) > -1 || config.havePermisiison){
             banners.push(item)
           }
         }

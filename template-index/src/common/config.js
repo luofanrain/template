@@ -38,7 +38,7 @@ export default {
         other:'未知错误，请联系管理排查'
       }
     },
-    host:'/',
+    host:'',
     wxinterface:[
       'startRecord',
       'stopRecord',

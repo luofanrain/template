@@ -19,8 +19,7 @@
 <script>
 import headerlabel from '@/components/main/headerlabel'
 import asidelabel from '@/components/main/asidelabel'
-import mainlabel from '@/components/main/mainlabel'
-import permissions from '@/components/menu/permissions/permissions'
+import templateblock from '@/components/menu/templateblock/templateblock'
 export default  {
     name:'index',
     data(){
@@ -37,8 +36,7 @@ export default  {
     components:{
         headerlabel,
         asidelabel,
-        mainlabel,
-        permissions,
+        templateblock,
     }
 }
 

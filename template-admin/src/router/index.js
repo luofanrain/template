@@ -6,6 +6,7 @@ import tool from '@/common/tool'
 import urls from '@/common/urls'
 import axios from '@/common/axios'
 import store from '@/vuex/store'
+import config from '@/common/config'
 
 Vue.use(Router)
 
@@ -14,7 +15,7 @@ const router = new Router({
   routes: [
     {
       path: '*', // 页面不存在的情况下会跳到404页面
-      redirect:'/',
+      redirect:'/login',
     },
     {
       path: '/',
@@ -35,9 +36,11 @@ const router = new Router({
 })
 // 路由劫持
 router.beforeEach((to,from,next)=>{
+  if(!config.host){
+    next();
+    return;
+  }
   const username = tool.getCookie('username') || ''
-  next();
-  return;
   if(username || to.name =='login'){
     if(!store.state.token && to.name != 'login'){
       getToken(()=>{
@@ -58,7 +61,7 @@ const getToken = (callback) => {
   }
   axios.post(urls.login,data,(res)=>{
     if(!res.errcode){
-      store.commit('setState',{token:res['token']});
+      tool.setCookie('token',res.token)
       callback()
     }else{
       tool.setCookie('username','')

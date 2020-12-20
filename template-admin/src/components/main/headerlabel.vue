@@ -3,7 +3,7 @@
     <el-row class='shopName'>
       <el-col :span="24">
         <el-card shadow="always">
-          模板
+          后台管理模板
         </el-card>
       </el-col>
     </el-row>

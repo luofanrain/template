@@ -55,7 +55,7 @@ export default {
       axios.post(urls.login,data,(res)=>{
         console.log(res)
         if(!res.errcode){
-          this.$store.commit('setState',{token:res['token']});
+          tool.setCookie('token',res.token)
           this.$router.push({
             path:'/'
           })

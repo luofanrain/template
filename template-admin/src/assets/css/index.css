@@ -156,8 +156,8 @@
   border-bottom-right-radius: 5px;
 }
 .pageMiddle_detail .pageMiddle_field{
-  text-align: right;;
-  width:100px;
+  text-align: right;
+  /* width:60px; */
   margin-right:20px;
 }
 .pageMiddle_detail .pageMiddle_value{
@@ -277,5 +277,11 @@ li{
   justify-content: center;
 }
 .page_row_btn_single button{
+  width:200px;
+}
+.pageMiddle_row_group{
+  justify-content: center;
+}
+.pageMiddle_row_group button{ 
   width:200px;
 }

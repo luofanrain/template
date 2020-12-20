@@ -1545,7 +1545,7 @@ export default  [
     ]
   },
   {
-    "name":"内蒙古自治区",
+    "name":"内蒙古",
     "code":"150000",
     "sub":[
       {
@@ -9607,7 +9607,7 @@ export default  [
     ]
   },
   {
-    "name":"广西壮族自治区",
+    "name":"广西",
     "code":"450000",
     "sub":[
       {
@@ -12519,7 +12519,7 @@ export default  [
     ]
   },
   {
-    "name":"西藏自治区",
+    "name":"西藏",
     "code":"540000",
     "sub":[
       {
@@ -14121,7 +14121,7 @@ export default  [
     ]
   },
   {
-    "name":"宁夏回族自治区",
+    "name":"宁夏",
     "code":"640000",
     "sub":[
       {
@@ -14265,7 +14265,7 @@ export default  [
     ]
   },
   {
-    "name":"新疆维吾尔自治区",
+    "name":"新疆",
     "code":"650000",
     "sub":[
       {
@@ -16335,7 +16335,7 @@ export default  [
     ]
   },
   {
-    "name":"香港特别行政区",
+    "name":"香港",
     "code":"810000",
     "sub":[
       {
@@ -16431,7 +16431,7 @@ export default  [
     ]
   },
   {
-    "name":"澳门特别行政区",
+    "name":"澳门",
     "code":"820000",
     "sub":[
       {

@@ -5,6 +5,12 @@
     zip:'application/zip',
     xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
   },
+  showTips:{
+    update:'修改成功',
+    create:'新增成功',
+    delete:'删除成功',
+    import:'导入成功'
+  },
   tips:{
     errCode:{
       400:'参数错误',
@@ -41,6 +47,7 @@
     page:1,
     pagesize:20,
     label:{
+      select:'查询',
       create:'新增',
       modify:'修改',
       export:'导出',

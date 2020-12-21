@@ -38,6 +38,14 @@ const tool = {
     }
     return text;
   },
+  getURL(url,data={}){
+    let index = 0;
+    for(let key in data){
+      let _symbol = index++ === 0 ? '?' : '&';
+      url+=`${_symbol}${key}=${data[key]}`
+    }
+    return url;
+  },
   getTime(time){
     let date = new Date(time);
     let year = date.getFullYear();

@@ -2,8 +2,10 @@
   <div class='page_menu_list'>
     <div class='func_tab'>
       <el-input v-model="search.name" placeholder="请输入关键字"></el-input>
-      <el-button type="primary" @click='loadData'>查询</el-button>
-      <el-button type="primary" @click='create'>新增</el-button>
+      <el-button type="primary" @click='loadData'>{{config.label.select}}</el-button>
+      <el-button type="primary" @click='create'>{{config.label.create}}</el-button>
+      <el-button type="primary" @click='uploadFile'>{{config.label.import}}</el-button>
+      <input type='file' v-if='resetFile' v-show='false' @change='changeFile'>
     </div>
     <div class='tableData' ref='list' :style='`height:${height-100}px`'>
       <el-table
@@ -84,6 +86,7 @@
         list: [],
         scroll:undefined,
         loading:false,
+        resetFile:truetrue,
         deleteLoading:false,
         fields:{},
         item:{},
@@ -105,8 +108,7 @@
     },
     methods:{
       loadData(){
-        console.log(this.search)
-        let url = `${urls.templateblock.list}?page=${this.search.page}&pagesize=${this.search.pagesize}&name=${this.search.name}`
+        let url = tool.getURL(urls.templateblock.list,this.search)
          axios.get(url,(res)=>{
           this.list = res.data;
           this.total_page = res.count || 1;
@@ -145,6 +147,16 @@
         this.loadData();
       },
       select(data,tableData,cell){
+      },
+      uploadFile(){
+        this.$refs.file.click()
+      },
+      async changeFile(e){
+        let file = e.target.files[0];
+        this.resetFile = false;
+        let data = await uploads.uploadFile(file,'xlsx|xls','file',urls.templateblock.import);
+        tips.success({text:config.showTips.import})
+        this.resetFile = true;
       },
       exportFile(){
         axios.download(urls.templateblock.export,this.getName(),'xlsx')
@@ -199,7 +211,7 @@
             this.search.page -=1;
           }
           this.loadData();
-          tips.success({text:`删除成功`})
+          tips.success({text:config.showTips.delete})
         })
       },
       
